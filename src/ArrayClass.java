@@ -6,6 +6,7 @@ public class ArrayClass {
     public final int[] array;
 
     private int minValue = Integer.MAX_VALUE;
+    private int minElIndex = -1;
     private int threadCompleted = 0;
 
     public ArrayClass(int length, int threadCount) {
@@ -19,9 +20,10 @@ public class ArrayClass {
         }
     }
 
-    synchronized public void collectMin(int value) {
+    synchronized public void collectMin(int value, int index) {
         if (value < minValue) {
             minValue = value;
+            minElIndex = index;
         }
     }
 
@@ -34,7 +36,7 @@ public class ArrayClass {
         return threadCompleted;
     }
 
-    synchronized private int waitForThreads() {
+    synchronized private MinResult waitForThreads() {
         while (getCompletedThreadCount() < threadCount) {
             try{
                 wait();
@@ -42,10 +44,10 @@ public class ArrayClass {
                 e.printStackTrace();
             }
         }
-        return minValue;
+        return new MinResult(minValue, minElIndex);
     }
 
-    public int threadMin(){
+    public MinResult threadMin(){
         MinThread[] threads = new MinThread[threadCount];
         int chunk = (int)Math.ceil(length / (double)threadCount);
 

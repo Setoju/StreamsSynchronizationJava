@@ -12,14 +12,16 @@ public class MinThread extends Thread {
     @Override
     public void run() {
         int localMin = Integer.MAX_VALUE;
+        int localMinIndex = -1;
 
         for(int i = start; i < end; i++) {
             if(arrayClass.array[i] < localMin){
                 localMin = arrayClass.array[i];
+                localMinIndex = i;
             }
         }
 
-        arrayClass.collectMin(localMin);
+        arrayClass.collectMin(localMin, localMinIndex);
         arrayClass.increaseThreadCount();
     }
 }
